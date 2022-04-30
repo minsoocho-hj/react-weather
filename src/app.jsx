@@ -52,7 +52,7 @@ function App() {
 	return (
 		<>
 			{loading ? (
-				<ClipLoader color='pink' loading={loading} size={100} />
+				<ClipLoader color={color} loading={loading} size={100} />
 			) : (
 				<>
 					<div className={styles.weather}>
