@@ -11,6 +11,7 @@ function App() {
 	const [weather, setWeather] = useState(null);
 	const [selectedCity, setSelectedCity] = useState('Current Location');
 	let [loading, setLoading] = useState(true);
+	const [apiError, setAPIError] = useState('');
 	let [color, setColor] = useState('#ffffff');
 
 	const cities = ['Current Location', 'London', 'New York', 'Seoul', 'Bali'];
@@ -24,8 +25,8 @@ function App() {
 	};
 
 	const getWeatherByCurrentLocation = async (lat, lon) => {
-		let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.REACT_APP_API_KEY}&units=metric`;
 		setLoading(true);
+		let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.REACT_APP_API_KEY}&units=metric`;
 		await fetch(url)
 			.then((res) => res.json())
 			.then(
@@ -33,7 +34,9 @@ function App() {
 					setWeather(data);
 				},
 				(error) => {
-					console.log('error ' + error);
+					console.log(error);
+					setAPIError(error);
+					setLoading(false);
 				}
 			);
 		setLoading(false);
@@ -50,6 +53,8 @@ function App() {
 				},
 				(error) => {
 					console.log('error ' + error);
+					setAPIError(error);
+					setLoading(false);
 				}
 			);
 		setLoading(false);
@@ -67,7 +72,7 @@ function App() {
 		<div className={styles.display}>
 			{loading ? (
 				<ClipLoader color='pink' loading={loading} size={150} />
-			) : (
+			) : !apiError ? (
 				<>
 					<WeatherDisplay weather={weather} />
 					<div className={styles.selectBox}>
@@ -80,6 +85,8 @@ function App() {
 						))}
 					</div>
 				</>
+			) : (
+				apiError
 			)}
 		</div>
 	);
